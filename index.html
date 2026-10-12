@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Finder</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" type="module"></script>
+</head>
+<body>
+  <a href="../">← Home</a>
+  <h1>Book Finder</h1>
+
+  <form id="search-form">
+    <label for="query">Search by title or author</label>
+    <input id="query" name="query" required>
+    <button>Search</button>
+  </form>
+
+  <p id="status" aria-live="polite"></p>
+  <ul id="results"></ul>
+
+  <h2>My reading list</h2>
+  <ul id="reading-list"></ul>
+</body>
+</html>
