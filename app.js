@@ -1,4 +1,4 @@
-// Part 1: a pretend library. Part 2 replaces fakeSearch with a real fetch.
+// Part 1: a pretend library. In Part 2 you replace fakeSearch with a real search using fetch.
 const FAKE_BOOKS = [
   { key: "/works/OL893414W", title: "Dune", author_name: ["Frank Herbert"], first_publish_year: 1965 },
   { key: "/works/OL35623W", title: "Parable of the Sower", author_name: ["Octavia E. Butler"], first_publish_year: 1993 },
@@ -8,8 +8,8 @@ const FAKE_BOOKS = [
   { key: "/works/OL1168083W", title: "Nineteen Eighty-Four", author_name: ["George Orwell"], first_publish_year: 1949 },
 ];
 
-// Stands in for a slow network request: hands back the matches a second later.
-function fakeSearch(query, onResults) {
+// Pretends to be a slow website: after one second it calls whenDone with the books that match.
+function fakeSearch(query, whenDone) {
   setTimeout(() => {
     const q = query.toLowerCase();
     const matches = FAKE_BOOKS.filter(
@@ -17,7 +17,7 @@ function fakeSearch(query, onResults) {
         book.title.toLowerCase().includes(q) ||
         book.author_name.some((name) => name.toLowerCase().includes(q))
     );
-    onResults(matches);
+    whenDone(matches);
   }, 1000);
 }
 

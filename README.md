@@ -1,120 +1,228 @@
 # cs333-lab3
-Events, callbacks, `async`/`await` and `fetch`: build a Book Finder 📚
+Forms, callbacks and fetch: build a Book Finder 📚
 
 Search a real library catalogue ([Open Library](https://openlibrary.org/developers/api): free, no key, no sign-up), show the results, and keep a reading list.
 
 Do each step below, and **answer the questions right here in this `README.md` file** as you go (type your answers under each question).
 
-- **Part 1:** after Monday's class: a form, a fake slow search with a callback, a list built with `createElement`
-- **Part 2:** after Wednesday's class: swap the fake for a real `fetch` with `async`/`await`
-- **Part 3:** a reading list that survives a page reload
-- **Deploy** to `lampforall` as `lab3/`
+- **Part 1:** after Monday's class. A form, a fake slow search, and a list of results.
+- **Part 2:** after Wednesday's class. Swap the fake search for a real one with `fetch`.
+- **Part 3:** a reading list.
+- **Deploy** to `lampforall` as `lab3/`.
+
+Each part uses exactly what we did in class. The `practice/` and `practice-wed/` folders in this repo are the class practice pages, with a `catch-up.js` in each, if you want to look back.
 
 **How this lab works (three links to hand in):**
 - **Your code:** make your own copy of this lab (click **Use this template**, or clone it), do your work, and **push it to your own GitHub repo**.
 - **Your landing page:** your home page on `lampforall`, now linking to Lab 3 too.
 - **Your live Book Finder:** SFTP it to your web folder so it runs at `.../students/yourname/lab3/`.
 
->  **Same two rules as Lab 2:** relative paths only (`style.css`, never `/style.css`), and filenames are case-sensitive on the server.
+> ⚠️ **Same two rules as Lab 2:** relative paths only (`style.css`, never `/style.css`), and filenames are case-sensitive on the server.
 
-**Habits I'm looking for, all the way through:**
-- **Build one step at a time.** After every step, run it in the browser with DevTools → **Console** open. Don't paste in a whole solution and debug it all at once.
-- **`console.log` what came in** (the form value, the data you got back) before you use it. **Leave these in your code.**
+**Habits I'm looking for:**
+- **One step at a time.** After every step, reload with DevTools → **Console** open and check it works before going on.
+- **Leave your `console.log`s in.**
 - **Commit after each part** with a message that says what works now (`Part 1: fake search shows results`).
-- **User data goes on the page with `textContent`**, never `innerHTML`.
-- **Comment the *why***, not the *what*: `// disabled so a double-click can't send two searches`, not `// disable button`.
+- **Comment your code** to explain how it works, in your own words.
 
 ## Part 1: a fake search (after Monday)
 
-`index.html` and `style.css` are done. `app.js` gives you `FAKE_BOOKS` and `fakeSearch(query, onResults)`, a pretend library that answers after one second. Read it first.
+`index.html` and `style.css` are done. Open `app.js`: it gives you `FAKE_BOOKS` (a few books) and `fakeSearch(query, whenDone)`, a pretend library that answers after one second, the same idea as Monday's `saveItem`. Your code goes at the bottom.
 
-1. Select the form, `#status` and `#results` with `querySelector`. `console.log` each: none should be `null`.
-   The `<script>` tag has `defer`. Why does that mean your code can find these elements, even though the tag is in the `<head>`?
-2. Listen for **`submit`** on the form (not `click` on the button), the same as Monday's practice page. Call `event.preventDefault()`, read what was typed with `document.querySelector("#query").value`, and log it.
-   What happens if you leave out `preventDefault()`?
-3. Call `fakeSearch(query, callback)`. In your callback, log the array you get back.
-   Put a `console.log("after fakeSearch")` on the line right after the call. Which prints first, and why?
-4. **Loading state:** before calling `fakeSearch`, set the status to `Searching for "…"` and disable the button. In the callback, clear the status and re-enable the button.
-5. Write `renderResults(books)`: empty `#results`, then add one `<li>` per book showing the title, the first author and the year. Use `document.createElement` and `textContent`. Call it from your callback.
-6. **Empty state:** when nothing matches, the status says `No books found for "…"`.
-7. Give each result a **Save** button. In `renderResults`, right after you create the button, add a click listener to it that logs the book's title:
+1. Find the elements you need. Paste this at the bottom of `app.js` and reload: none of the four should log `null`.
    ```js
-   const save = document.createElement("button");
-   save.textContent = "Save";
-   save.addEventListener("click", function () {
-     console.log("save", book.title);
-   });
-   li.append(save);
+   const form = document.querySelector("#search-form");
+   const input = document.querySelector("#query");
+   const statusMessage = document.querySelector("#status");
+   const results = document.querySelector("#results");
+   console.log(form, input, statusMessage, results);
    ```
-   How does each button know *which* book it belongs to?
 
-**Check:** search `butler` → "Searching…" for a second → two results. Search `zzz` → the empty message. Click Save → that book's title is logged.
+2. Listen for the form, the same as Monday's practice page:
+   ```js
+   form.addEventListener("submit", function (event) {
+     event.preventDefault();
+     const query = input.value;
+     console.log("searching for", query);
+   });
+   ```
+   Type something and press Enter. What does the Console show?
+
+3. Call the fake search. Add these lines **inside** your submit listener, after the `console.log`:
+   ```js
+     fakeSearch(query, function (books) {
+       console.log("got", books);
+     });
+   ```
+   Search `butler`. After a second, the Console shows what `fakeSearch` sent back. How many books, and what are their titles?
+
+4. **Show that it's working.** Inside the listener, before `fakeSearch`, add:
+   ```js
+     statusMessage.textContent = "Searching...";
+   ```
+   Then make the callback set `statusMessage.textContent` back to `""` when the books arrive.
+
+5. **Show the books.** Paste this function above your submit listener:
+   ```js
+   function renderResults(books) {
+     results.textContent = "";
+     books.forEach(function (book) {
+       const li = document.createElement("li");
+       li.textContent = book.title + " — " + book.author_name[0] + " (" + book.first_publish_year + ")";
+       results.append(li);
+     });
+   }
+   ```
+   Then call `renderResults(books);` inside your `fakeSearch` callback. Search `butler` again: two books on the page.
+
+6. **Nothing found.** Search `zzz`: the list is just empty. In the callback, add an `if` so that when `books.length === 0` the status says `No books found`.
+
+7. **A Save button on each book.** In `renderResults`, add these lines just before `results.append(li);`:
+   ```js
+       const save = document.createElement("button");
+       save.textContent = "Save";
+       save.addEventListener("click", function () {
+         console.log("save", book.title);
+       });
+       li.append(save);
+   ```
+   Click Save on each book. How does each button know *which* book it belongs to?
+
+**Check:** `butler` → "Searching..." for a second → two books. `zzz` → "No books found". Save → that book's title in the Console.
+
+Commit: `Part 1: fake search shows results`
 
 ## Part 2: the real thing (after Wednesday)
 
-Open this in a browser tab and look at the JSON. The books are in `docs`:
-`https://openlibrary.org/search.json?q=octavia+butler&limit=10&fields=key,title,author_name,first_publish_year,cover_i`
-
-8. Write `async function searchBooks(query)` that returns the `docs` array. Build the URL with `URLSearchParams`, so spaces and symbols in the query are encoded for you:
+8. Paste this function above your submit listener. It's Wednesday's search, except it **gives back** the books with `return` instead of putting them on the page:
    ```js
-   const params = new URLSearchParams({
-     q: query,
-     limit: 10,
-     fields: "key,title,author_name,first_publish_year,cover_i",
-   });
-   const url = `https://openlibrary.org/search.json?${params}`;
+   async function searchBooks(query) {
+     const url = "https://openlibrary.org/search.json?limit=10&q=" + encodeURIComponent(query);
+     console.log("fetching", url);
+     const response = await fetch(url);
+     const data = await response.json();
+     return data.docs;
+   }
    ```
-9. `await fetch(url)`, then **check `response.ok`** before reading the body; if it isn't ok, `throw new Error(...)` with the status code. Then `await response.json()`, log `data.numFound`, and return `data.docs`.
-   `fetch` didn't throw an error for a 404. Why not, and why does that mean you have to check `response.ok` yourself?
-10. Make your submit handler `async`. Replace the `fakeSearch(...)` call with `const books = await searchBooks(query);` then `renderResults(books)`.
-    Your callback from Part 1 is gone. Where did the code that was inside it go?
-11. **Error state:** wrap the search in `try` / `catch` / `finally`.
-    - `catch`: a message a person can act on ("Couldn't reach the library. Check your connection and try again.") and `console.error` the real error.
-    - `finally`: re-enable the button.
-12. Real data is messy: some books have no `author_name`, some have no year. Show "Unknown author" and leave the year out rather than printing `undefined`. (Search `annual report` to see both.)
-13. Covers: when a book has `cover_i`, show `https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg` in an `<img>` with `alt` set to `Cover of …`.
 
-**Check:**
-- A search with a space and an apostrophe (`ender's game`) works.
-- DevTools → **Network** → throttling → **Offline**, then search: you see your error message, the button comes back, nothing is stuck on "Searching…". Set it back to **No throttling**.
-  What did the Console show for the real error?
-- Search for just `the`. Open Library answers with status **422**, and your page probably says "Couldn't reach the library". Is that true? Make the message match what actually went wrong: a network failure and a server that refused the request need different words.
+9. Replace your whole submit listener with this one. Notice `async` before `function`, and `await` in front of `searchBooks`:
+   ```js
+   form.addEventListener("submit", async function (event) {
+     event.preventDefault();
+     const query = input.value;
+     console.log("searching for", query);
+
+     statusMessage.textContent = "Searching...";
+     const books = await searchBooks(query);
+     console.log("got", books);
+     renderResults(books);
+
+     if (books.length === 0) {
+       statusMessage.textContent = "No books found";
+     } else {
+       statusMessage.textContent = "";
+     }
+   });
+   ```
+   Search `octavia butler`. Real books! Then search `ender's game`.
+   `fakeSearch` needed a callback. Where did the code from inside that callback go?
+
+10. **Missing authors.** Search `annual report`. Some books have no author, and your page breaks: look at the Console. Fix `renderResults` the way we did in Wednesday's step 6: start with `let author = "Unknown author";` and only use `book.author_name[0]` if `book.author_name` exists. Do the same for the year, leaving it out when `book.first_publish_year` doesn't exist.
+    What was the error in the Console before you fixed it?
+
+11. **When the internet fails.** DevTools → **Network** → **Offline**, then search: stuck on "Searching...". Wrap the middle of your listener in `try` / `catch`, the way we did in Wednesday's step 5:
+    ```js
+      try {
+        const books = await searchBooks(query);
+        // ...the rest of what was here...
+      } catch (error) {
+        console.log("something went wrong:", error);
+        statusMessage.textContent = "Couldn't reach the library. Check your connection.";
+      }
+    ```
+    Search while Offline: you get your message. Set it back to **No throttling**.
+
+**Check:** a real search shows real books; `annual report` shows "Unknown author" instead of breaking; Offline shows your message.
+
+Commit: `Part 2: real search with fetch`
 
 ## Part 3: a reading list
 
-14. Keep the list in one array of `{ key, title, author }` objects.
-15. When Save is clicked (your listener from step 7), add that book unless it's already there, then call `renderReadingList()`.
-16. Each reading-list item gets a **Remove** button, with a click listener added the same way as Save, that takes that book out of the array and calls `renderReadingList()` again.
-17. After every change, save it: `localStorage.setItem("readingList", JSON.stringify(readingList))`. When the page loads, read it back with `JSON.parse`. Reload: your list is still there.
-    Why do you need `JSON.stringify` here? What does `localStorage` store?
+12. Paste this above your submit listener. `readingList` is an **array** that holds the books you've saved, and `renderReadingList` draws it on the page, with a Remove button on each:
+    ```js
+    const readingListElement = document.querySelector("#reading-list");
+    const readingList = [];
 
-## Optional stretch (pick any)
+    function renderReadingList() {
+      readingListElement.textContent = "";
+      readingList.forEach(function (book, index) {
+        const li = document.createElement("li");
+        li.textContent = book.title + " ";
 
-- **Stale results:** search `dune`, then quickly `emma`. If `dune` answers last, the wrong results show. Fix it with an `AbortController` that cancels the previous request.
-- **Sort** the results by year without making a new request.
-- **Link** each title to `https://openlibrary.org${book.key}` in a new tab (`target="_blank" rel="noopener"`).
-- **Debounce:** search as you type, but only after 400 ms without a keystroke.
+        const remove = document.createElement("button");
+        remove.textContent = "Remove";
+        remove.addEventListener("click", function () {
+          readingList.splice(index, 1);
+          renderReadingList();
+        });
+
+        li.append(remove);
+        readingListElement.append(li);
+      });
+    }
+    ```
+    `splice(index, 1)` removes 1 item at position `index`.
+
+13. Make **Save** add the book. In your Save button's click listener (step 7), under the `console.log`, add two lines:
+    ```js
+          readingList.push(book);
+          renderReadingList();
+    ```
+    `push` adds an item to the end of an array. Save a few books, then remove one.
+    Reload the page. What happens to your reading list, and why?
+
+**Check:** Save adds a book to "My reading list"; Remove takes it off.
+
+Commit: `Part 3: reading list`
+
+## Optional extras
+
+- **No duplicates.** Clicking Save twice adds the book twice. Before the `push`, add:
+  ```js
+        if (readingList.includes(book)) return;
+  ```
+  Why does that still let you add a book twice if you search again first? (Hint: is it the *same* object?)
+- **Keep the list after a reload.** The browser can store text for your page in `localStorage`. An array isn't text, but `JSON.stringify` turns it into JSON text, and `JSON.parse` turns it back:
+  ```js
+  // at the end of renderReadingList:
+  localStorage.setItem("readingList", JSON.stringify(readingList));
+  ```
+  and change `const readingList = [];` to:
+  ```js
+  const readingList = JSON.parse(localStorage.getItem("readingList")) || [];
+  ```
+  then call `renderReadingList();` once at the very bottom of `app.js`. Save some books and reload.
+- **Covers.** Books with a `cover_i` have a picture at `"https://covers.openlibrary.org/b/id/" + book.cover_i + "-S.jpg"`. Add an `<img>` to each result (`img.src = ...`, `img.alt = "Cover of " + book.title`).
 
 ## Deploy it
 
-18. Add Lab 3 to your landing page: a link `href="lab3/"` and a line saying what it is. Check that the **← Home** link at the top of Book Finder goes back.
-19. SFTP `index.html`, `style.css` and `app.js` into a `lab3/` folder in your web folder, plus your updated landing page.
-20. Open `https://lampforall.cis251296.projects.jetstream-cloud.org/students/yourname/lab3/` and test everything there: search, Save, Remove, reload.
-    Your reading list is empty on the live site even though it was full locally. Why? (Hint: where does `localStorage` keep things?)
-21. One bug you hit in this lab: what was it, and what did the Console or Network tab show you?
-22. Push this repo (code **and** this README with your answers) to **your own GitHub repo**.
-23. Submit in Moodle three links: (1) your GitHub repo, (2) your landing page, and (3) your live Book Finder.
+14. Add Lab 3 to your landing page: a link `href="lab3/"` and a line saying what it is. Check that the **← Home** link at the top of Book Finder goes back.
+15. SFTP `index.html`, `style.css` and `app.js` into a `lab3/` folder in your web folder, plus your updated landing page.
+16. Open `https://lampforall.cis251296.projects.jetstream-cloud.org/students/yourname/lab3/` and test everything there: search, Save, Remove.
+17. One bug you hit in this lab: what was it, and what did the Console show you?
+18. Push this repo (code **and** this README with your answers) to **your own GitHub repo**.
+19. Submit in Moodle three links: (1) your GitHub repo, (2) your landing page, and (3) your live Book Finder.
 
 ## Stuck?
 
 | You see | Likely cause |
 | --- | --- |
 | `Cannot read properties of null (reading 'addEventListener')` | A typo in a selector (`#result` vs `#results`) |
-| The page reloads and the Console clears when you search | No `event.preventDefault()`, or you listened for `click` on the button instead of `submit` on the form |
-| `Promise {<pending>}` or `[object Promise]` | Missing `await` |
-| `await is only valid in async functions…` | The function with the `await` in it isn't marked `async` |
-| `undefined` in a result | That book has no author or year: step 12 |
-| `Unexpected token '<'` … `is not valid JSON` | The URL is wrong and you got an HTML error page back. Log `url` and open it in a tab |
-| Stuck on "Searching…" | The error path never re-enables the button: move that into `finally` |
+| The page reloads and the Console clears when you search | Missing `event.preventDefault()` |
+| `Cannot read properties of undefined (reading '0')` | A book with no `author_name`: step 10 |
+| `undefined` in a result | A book with no year: step 10 |
+| `Promise {<pending>}` | Missing `await` in front of `searchBooks(...)` |
+| `await is only valid in async functions…` | The listener needs `async` before `function` |
+| Stuck on "Searching..." | An error happened: look in the Console, then step 11 |
 | `document is not defined` | You ran `app.js` with VS Code's ▶ button, which uses Node. Use Live Server |
 | Works locally, broken on `lampforall` | DevTools → Network, look for red 404s: a leading `/` or a filename's case |
