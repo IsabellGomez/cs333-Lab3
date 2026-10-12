@@ -204,6 +204,84 @@ Commit: `Part 3: reading list`
   then call `renderReadingList();` once at the very bottom of `app.js`. Save some books and reload.
 - **Covers.** Books with a `cover_i` have a picture at `"https://covers.openlibrary.org/b/id/" + book.cover_i + "-S.jpg"`. Add an `<img>` to each result (`img.src = ...`, `img.alt = "Cover of " + book.title`).
 
+## Optional: make it yours (style)
+
+Your Book Finder works; now make it look like *yours*. Everything here goes at the bottom of `style.css`. Paste a piece, reload, then change it until you like it.
+
+**One rule:** change how things *look*, not their names. Your JavaScript finds elements by `id` (`#results`, `#status`, ...), so don't rename or remove those in `index.html`.
+
+1. **Pick your colours in one place.** These are CSS **variables**: you set a colour once at the top and use it everywhere with `var(...)`:
+   ```css
+   :root {
+     --main: #2b6cb0;
+     --background: #f7f7f2;
+     --card: #ffffff;
+     --text: #222222;
+   }
+
+   body {
+     background: var(--background);
+     color: var(--text);
+   }
+
+   h1, h2 {
+     color: var(--main);
+   }
+   ```
+   Change the colours to your own. [coolors.co](https://coolors.co) can suggest colours that go together.
+
+2. **Buttons.**
+   ```css
+   button {
+     background: var(--main);
+     color: white;
+     border: none;
+     border-radius: 6px;
+     padding: 0.4rem 0.8rem;
+     cursor: pointer;
+   }
+
+   button:hover {
+     opacity: 0.85;
+   }
+   ```
+   `:hover` only applies while the mouse is over the button.
+
+3. **Each book as a card.**
+   ```css
+   #results li,
+   #reading-list li {
+     background: var(--card);
+     border: 1px solid #dddddd;
+     border-radius: 8px;
+     padding: 0.75rem;
+     margin-bottom: 0.5rem;
+   }
+   ```
+
+4. **A font.** Pick one on [fonts.google.com](https://fonts.google.com), click **Get font → Get embed code**, and copy its `<link>` lines into the `<head>` of `index.html`, *above* the line that loads `style.css`. Then use it in `style.css`, for example:
+   ```css
+   body {
+     font-family: "Lora", serif;
+   }
+   ```
+
+5. **Dark mode.** This only applies when someone's computer is set to dark mode, and it just swaps the colours from step 1:
+   ```css
+   @media (prefers-color-scheme: dark) {
+     :root {
+       --background: #1e1e1e;
+       --card: #2a2a2a;
+       --text: #eeeeee;
+       --main: #7fb3ff;
+     }
+   }
+   ```
+
+6. **Match your landing page,** so your labs look like one website.
+
+**Question:** what did you change, and why? Add a screenshot of your Book Finder before and after to this README.
+
 ## Deploy it
 
 14. Add Lab 3 to your landing page: a link `href="lab3/"` and a line saying what it is. Check that the **← Home** link at the top of Book Finder goes back.
