@@ -15,7 +15,7 @@ Do each step below, and **answer the questions right here in this `README.md` fi
 - **Your landing page:** your home page on `lampforall`, now linking to Lab 3 too.
 - **Your live Book Finder:** SFTP it to your web folder so it runs at `.../students/yourname/lab3/`.
 
-> ⚠️ **Same two rules as Lab 2:** relative paths only (`style.css`, never `/style.css`), and filenames are case-sensitive on the server.
+>  **Same two rules as Lab 2:** relative paths only (`style.css`, never `/style.css`), and filenames are case-sensitive on the server.
 
 **Habits I'm looking for, all the way through:**
 - **Build one step at a time.** After every step, run it in the browser with DevTools → **Console** open. Don't paste in a whole solution and debug it all at once.
