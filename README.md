@@ -63,13 +63,14 @@ Open this in a browser tab and look at the JSON. The books are in `docs`:
 11. **Error state:** wrap the search in `try` / `catch` / `finally`.
     - `catch`: a message a person can act on ("Couldn't reach the library. Check your connection and try again.") and `console.error` the real error.
     - `finally`: re-enable the button.
-12. Real data is messy: some books have no `author_name`, some have no year. Show "Unknown author" and leave the year out rather than printing `undefined`.
+12. Real data is messy: some books have no `author_name`, some have no year. Show "Unknown author" and leave the year out rather than printing `undefined`. (Search `annual report` to see both.)
 13. Covers: when a book has `cover_i`, show `https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg` in an `<img>` with `alt` set to `Cover of …`.
 
 **Check:**
 - A search with a space and an apostrophe (`ender's game`) works.
 - DevTools → **Network** → throttling → **Offline**, then search: you see your error message, the button comes back, nothing is stuck on "Searching…". Set it back to **No throttling**.
   What did the Console show for the real error?
+- Search for just `the`. Open Library answers with status **422**, and your page probably says "Couldn't reach the library". Is that true? Make the message match what actually went wrong: a network failure and a server that refused the request need different words.
 
 ## Part 3: a reading list
 
