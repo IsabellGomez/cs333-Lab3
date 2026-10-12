@@ -5,7 +5,7 @@ Search a real library catalogue ([Open Library](https://openlibrary.org/develope
 
 Do each step below, and **answer the questions right here in this `README.md` file** as you go (type your answers under each question).
 
-- **Part 1:** after Monday's class: forms, event delegation, a fake slow search with a callback
+- **Part 1:** after Monday's class: a form, a fake slow search with a callback, a list built with `createElement`
 - **Part 2:** after Wednesday's class: swap the fake for a real `fetch` with `async`/`await`
 - **Part 3:** a reading list that survives a page reload
 - **Deploy** to `lampforall` as `lab3/`
@@ -29,18 +29,26 @@ Do each step below, and **answer the questions right here in this `README.md` fi
 `index.html` and `style.css` are done. `app.js` gives you `FAKE_BOOKS` and `fakeSearch(query, onResults)`, a pretend library that answers after one second. Read it first.
 
 1. Select the form, `#status` and `#results` with `querySelector`. `console.log` each: none should be `null`.
-   The `<script>` tag has `type="module"`. Why does that mean your code can find these elements, even though the tag is in the `<head>`?
-2. Listen for **`submit`** on the form (not `click` on the button). Call `event.preventDefault()`, read the query with `new FormData(form)`, `.trim()` it, and log it.
+   The `<script>` tag has `defer`. Why does that mean your code can find these elements, even though the tag is in the `<head>`?
+2. Listen for **`submit`** on the form (not `click` on the button), the same as Monday's practice page. Call `event.preventDefault()`, read what was typed with `document.querySelector("#query").value`, and log it.
    What happens if you leave out `preventDefault()`?
 3. Call `fakeSearch(query, callback)`. In your callback, log the array you get back.
    Put a `console.log("after fakeSearch")` on the line right after the call. Which prints first, and why?
 4. **Loading state:** before calling `fakeSearch`, set the status to `Searching for "…"` and disable the button. In the callback, clear the status and re-enable the button.
 5. Write `renderResults(books)`: empty `#results`, then add one `<li>` per book showing the title, the first author and the year. Use `document.createElement` and `textContent`. Call it from your callback.
 6. **Empty state:** when nothing matches, the status says `No books found for "…"`.
-7. Give each result a **Save** button with `data-key` set to the book's `key`. Add **one** listener on `#results` (event delegation) that logs the clicked book's key. Don't add a listener per button.
-   Why does one listener on the `<ul>` work for buttons that didn't exist when the page loaded?
+7. Give each result a **Save** button. In `renderResults`, right after you create the button, add a click listener to it that logs the book's title:
+   ```js
+   const save = document.createElement("button");
+   save.textContent = "Save";
+   save.addEventListener("click", function () {
+     console.log("save", book.title);
+   });
+   li.append(save);
+   ```
+   How does each button know *which* book it belongs to?
 
-**Check:** search `butler` → "Searching…" for a second → two results. Search `zzz` → the empty message. Click Save → the key is logged.
+**Check:** search `butler` → "Searching…" for a second → two results. Search `zzz` → the empty message. Click Save → that book's title is logged.
 
 ## Part 2: the real thing (after Wednesday)
 
@@ -75,8 +83,8 @@ Open this in a browser tab and look at the JSON. The books are in `docs`:
 ## Part 3: a reading list
 
 14. Keep the list in one array of `{ key, title, author }` objects.
-15. When Save is clicked (your delegated listener from step 7), add that book unless it's already there, then call `renderReadingList()`.
-16. Each reading-list item gets a **Remove** button, handled by **one** listener on `#reading-list`.
+15. When Save is clicked (your listener from step 7), add that book unless it's already there, then call `renderReadingList()`.
+16. Each reading-list item gets a **Remove** button, with a click listener added the same way as Save, that takes that book out of the array and calls `renderReadingList()` again.
 17. After every change, save it: `localStorage.setItem("readingList", JSON.stringify(readingList))`. When the page loads, read it back with `JSON.parse`. Reload: your list is still there.
     Why do you need `JSON.stringify` here? What does `localStorage` store?
 
