@@ -1,7 +1,7 @@
 # cs333-lab3
 Forms, callbacks and fetch: build a Book Finder 
 
-Search a real library catalogue made for learning: ([Open Library](https://openlibrary.org/developers/api): free, no key, no sign-up), show the results, and keep a reading list.
+Search a real library catalogue made for learning, [Open Library](https://openlibrary.org/developers/api) (free, no key, no sign-up). Show the results, and keep a reading list.
 
 Do each step below, and **answer the questions right here in this `README.md` file** as you go (type your answers under each question).
 
