@@ -1,26 +1,53 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Finder</title>
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
 <body>
-  <a href="../">← Home</a>
-  <h1>Book Finder</h1>
+  <header>
+    <h1>Book Finder</h1>
+    <p>Search for books and save the ones you want to read.</p>
+  </header>
 
-  <form id="search-form">
-    <label for="query">Search by title or author</label>
-    <input id="query" name="query" required>
-    <button>Search</button>
-  </form>
+  <main>
+    <section aria-labelledby="search-heading">
+      <h2 id="search-heading">Search for Books</h2>
 
-  <p id="status" aria-live="polite"></p>
-  <ul id="results"></ul>
+      <form id="search-form">
+        <label for="query">Book title or author</label>
+        <div class="search-controls">
+          <input
+            type="search"
+            id="query"
+            name="query"
+            placeholder="Try Dune or Octavia Butler"
+            required
+          >
+          <button type="submit">Search</button>
+        </div>
+      </form>
 
-  <h2>My reading list</h2>
-  <ul id="reading-list"></ul>
+      <p id="status" role="status" aria-live="polite"></p>
+
+      <h2>Search Results</h2>
+      <ul id="results"></ul>
+    </section>
+
+    <section aria-labelledby="reading-heading">
+      <h2 id="reading-heading">My Reading List</h2>
+      <p>Books you save will appear here.</p>
+      <ul id="reading-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>CS333 Lab 3 — Book Finder</p>
+    <p><a href="../index.html">Back to my course homepage</a></p>
+  </footer>
 </body>
 </html>

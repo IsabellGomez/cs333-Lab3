@@ -47,6 +47,7 @@ Each part uses exactly what we did in class. The `practice/` and `practice-wed/`
    });
    ```
    Type something and press Enter. What does the Console show?
+   --The Console shows 'searching for' followed by whatever I typed into the search box.
 
 3. Call the fake search. Add these lines **inside** your submit listener, after the `console.log`:
    ```js
@@ -55,6 +56,7 @@ Each part uses exactly what we did in class. The `practice/` and `practice-wed/`
      });
    ```
    Search `butler`. After a second, the Console shows what `fakeSearch` sent back. How many books, and what are their titles?
+   --The fake search finds two books: Parable of the Sower and Kindred. Both are by Octavia E. Butler.
 
 4. **Show that it's working.** Inside the listener, before `fakeSearch`, add:
    ```js
@@ -87,6 +89,7 @@ Each part uses exactly what we did in class. The `practice/` and `practice-wed/`
        li.append(save);
    ```
    Click Save on each book. How does each button know *which* book it belongs to?
+   --Each button is created inside the loop for that book. Its click function uses that book's information when the button is clicked.
 
 **Check:** `butler` → "Searching..." for a second → two books. `zzz` → "No books found". Save → that book's title in the Console.
 
@@ -126,9 +129,11 @@ Commit: `Part 1: fake search shows results`
    ```
    Search `octavia butler`. Real books! Then search `ender's game`.
    `fakeSearch` needed a callback. Where did the code from inside that callback go?
+   --The code moved below await searchBooks in the form's submit listener.
 
 10. **Missing authors.** Search `annual report`. Some books have no author, and your page breaks: look at the Console. Fix `renderResults` the way we did in Wednesday's step 6: start with `let author = "Unknown author";` and only use `book.author_name[0]` if `book.author_name` exists. Do the same for the year, leaving it out when `book.first_publish_year` doesn't exist.
     What was the error in the Console before you fixed it?
+    --The original code tried to access book.author_name[0] when the author information was missing. This caused a JavaScript error. I fixed it by checking whether the author exists and displaying “Unknown author” when it doesn't.
 
 11. **When the internet fails.** DevTools → **Network** → **Offline**, then search: stuck on "Searching...". Wrap the middle of your listener in `try` / `catch`, the way we did in Wednesday's step 5:
     ```js
@@ -180,6 +185,7 @@ Commit: `Part 2: real search with fetch`
     ```
     `push` adds an item to the end of an array. Save a few books, then remove one.
     Reload the page. What happens to your reading list, and why?
+    -- Originally, the reading list disappeared after refreshing because a JavaScript array only exists while the page is running. I added 'localStorage' so the browser can save the reading list and restore it when the page loads again.
 
 **Check:** Save adds a book to "My reading list"; Remove takes it off.
 
@@ -203,6 +209,7 @@ Commit: `Part 3: reading list`
   ```
   then call `renderReadingList();` once at the very bottom of `app.js`. Save some books and reload.
 - **Covers.** Books with a `cover_i` have a picture at `"https://covers.openlibrary.org/b/id/" + book.cover_i + "-S.jpg"`. Add an `<img>` to each result (`img.src = ...`, `img.alt = "Cover of " + book.title`).
+-- The book appears more than once because each click adds another entry to the reading list. The current code does not check for duplicates.
 
 ## Optional: make it yours (style)
 
@@ -282,12 +289,15 @@ Your Book Finder works; now make it look like *yours*. Everything here goes at t
 
 **Question:** what did you change, and why? Add a screenshot of your Book Finder before and after to this README.
 
+-- I made it match my site 
+
 ## Deploy it
 
 14. Add Lab 3 to your landing page: a link `href="lab3/"` and a line saying what it is. Check that the **← Home** link at the top of Book Finder goes back.
 15. SFTP `index.html`, `style.css` and `app.js` into a `lab3/` folder in your web folder, plus your updated landing page.
 16. Open `https://lampforall.cis251296.projects.jetstream-cloud.org/students/yourname/lab3/` and test everything there: search, Save, Remove.
 17. One bug you hit in this lab: what was it, and what did the Console show you?
+--I encountered the stuck on searching... bug, it was because i misplaced the serach function in the wrong part of my code.
 18. Push this repo (code **and** this README with your answers) to **your own GitHub repo**.
 19. Submit in Moodle three links: (1) your GitHub repo, (2) your landing page, and (3) your live Book Finder.
 

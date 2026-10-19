@@ -1,44 +1,145 @@
-body {
-  font-family: system-ui, sans-serif;
-  max-width: 40rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.5;
+
+* {
+  box-sizing: border-box;
 }
 
-form {
-  display: flex;
-  gap: 0.5rem;
-  align-items: end;
-  flex-wrap: wrap;
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #252525;
+  background: #f4f6f8;
+}
+
+header {
+  padding: 2rem 1rem;
+  text-align: center;
+  background: #243b53;
+  color: white;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.3rem;
+}
+
+header p {
+  margin-bottom: 0;
+}
+
+main {
+  width: min(900px, 92%);
+  margin: 2rem auto;
+}
+
+section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  margin-top: 0;
+  color: #243b53;
 }
 
 label {
-  width: 100%;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
-input {
+.search-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+input[type="search"] {
   flex: 1;
-  padding: 0.4rem;
+  min-width: 180px;
+  padding: 0.75rem;
+  border: 1px solid #9aa5b1;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background: #176b87;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #104d63;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid #f0b429;
+  outline-offset: 3px;
 }
 
 ul {
-  list-style: none;
-  padding: 0;
+  padding-left: 1.5rem;
 }
 
 li {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
 }
 
-li img {
-  width: 40px;
+li button {
+  margin-left: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
 }
 
 #status {
-  font-style: italic;
+  min-height: 1.5rem;
+  font-weight: bold;
+  color: #334e68;
+}
+
+footer {
+  padding: 1rem;
+  text-align: center;
+  color: #52606d;
+}
+
+footer p {
+  margin: 0.4rem;
+}
+
+a {
+  color: #176b87;
+}
+
+@media (max-width: 500px) {
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  section {
+    padding: 1rem;
+  }
+
+  .search-controls {
+    flex-direction: column;
+  }
+
+  input[type="search"] {
+    width: 100%;
+  }
+
+  .search-controls button {
+    width: 100%;
+  }
 }
